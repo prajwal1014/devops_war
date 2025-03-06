@@ -1,0 +1,45 @@
+
+pipeline{
+    agent any
+    tools{
+        maven 'maven'
+    }
+    stages{
+        stage('pull the source code'){
+            steps{
+                git 'https://github.com/prajwal1014/devops_war.git'
+            }
+        }
+        stage('build the war file'){
+            steps{
+            sh 'mvn clean package'
+        }
+        }
+        stage('build the docker image'){
+            steps{
+                sh 'mv target/project5.war .'
+                sh 'docker build -t prajwal1014/prj .'
+            }
+        }
+        stage('push image to the dockerhub'){
+            steps{
+                sh """ docker login -u prajwal1014 -p $docker_token
+                docker push prajwal1014/prj
+                """
+            }
+        }
+        stage('remove image'){
+            steps{
+                sh 'docker rmi prajwal1014/prj'
+            }
+        }
+        stage('deployment by executing the playbook file '){
+            steps{
+                sh 'ansible-playbook deploy.yml'
+            }
+        }
+        
+}
+}
+
+
