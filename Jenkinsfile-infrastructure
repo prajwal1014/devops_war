@@ -1,0 +1,34 @@
+
+pipeline{
+    agent any
+    stages{
+        stage('pull the source code'){
+            steps{
+                git 'https://github.com/prajwal1014/devops_war.git'
+            }
+        }
+        stage('terraform init'){
+            steps{
+            sh 'terraform init'
+        }
+        }
+        stage('terraform refresh'){
+            steps{
+                sh 'TF_VAR_ak=$ak TF_VAR_pk=$pk  terraform refresh'
+            }
+        }
+        stage('terraform plan'){
+            steps{
+                sh 'TF_VAR_ak=$ak TF_VAR_pk=$pk  terraform plan'
+            }
+        } 
+        stage('terraform apply'){
+            steps{
+                sh 'TF_VAR_ak=$ak TF_VAR_pk=$pk  terraform apply --auto-approve'
+            }
+        }     
+        
+        
+    }
+}
+
