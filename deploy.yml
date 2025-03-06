@@ -1,0 +1,16 @@
+---
+- name: project deploy
+  hosts: dev
+  user: ansible
+  become: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: pull the docker image
+      command: docker pull prajwal1014/prj
+
+    - name: remove the existing container
+      command: docker rm -f app
+
+    - name: run the conatiner
+      command: docker run -it -d --name app -p 8081:8080 prajwal1014/prj
